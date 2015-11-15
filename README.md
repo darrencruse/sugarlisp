@@ -9,6 +9,7 @@ There are currently two "language" dialects and several smaller "mixin" dialects
 
 SugarLisp Core is a simple lisp designed to be easy for javascript programmers to understand.
 It is derived from (and remains largely compatible with) [LispyScript](http://lispyscript.com)
+
 All language extensions desugar their syntax to SugarLisp Core (which can be thought of as the AST for the other dialects).
 
 SugarScript is another "language" dialect which wraps SugarLisp behind a javascript-like syntax.
