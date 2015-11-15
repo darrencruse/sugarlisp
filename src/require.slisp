@@ -1,0 +1,12 @@
+(var fs (require "fs")
+	 path (require "path")
+     transpiler (require "../lib/transpiler"))
+
+// Register file extensions so that lispy
+// modules can be simply required.
+(function requireable (ext) (set ext require.extensions
+  (function (module filename)
+    (var code (fs.readFileSync filename "utf8"))
+    (module._compile (transpiler.transpile code (path.relative (process.cwd) filename)) filename))))
+
+(each [".slisp",".ls",".sugar",".slson",".slml",".slss"] (ext) => (requireable ext))

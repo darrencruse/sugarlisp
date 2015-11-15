@@ -1,0 +1,62 @@
+{
+  "name": "sugarlisp",
+  "description": "The extensible lisp-to-javascript transpiler",
+  "keywords": [
+    "javascript",
+    "language",
+    "sugarlisp",
+    "lispyscript",
+    "compiler",
+    "transpiler",
+    "lisp"
+  ],
+  "author": "Darren Cruse",
+  "contributors": ["Darren Cruse", "Santosh Rajan", "Balaji Rao","Irakli Gozalishvili"],
+  "version": "0.5.0",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/darrencruse/sugarlisp/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "./lib/transpiler",
+  "bin": {
+    "sugar": "./bin/sugar.js",
+    "sugardbg": "./bin/sugardbg.js"
+  },
+  "homepage": "https://github.com/darrencruse/sugarlisp",
+  "bugs": "https://github.com/darrencruse/sugarlisp/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/darrencruse/sugarlisp.git"
+  },
+  "devDependencies": {
+    "browserify": ">2.14.1",
+    "minifyify": ">=7.0.3",
+    "watch": ">= 0.14.0",
+    "source-map": ">= 0.1.40",
+    "tinix": ">=0.0.3",
+    "brfs": ">=1.4.0",
+    "underscore": "^1.8.2",
+    "js-beautify": ">=1.5.10",
+    "loophole": ">=1.0.0"
+  },
+  "scripts": {
+    "test": "sugar test/test.slisp test/test.js && node test/test.js",
+    "prepublish": "sugar src/sugar.slisp lib/sugar.js && sugar src/repl.slisp lib/repl.js && sugar src/require.slisp lib/require.js && browserify -t brfs -u source-map lib/browser.js > lib/sugarlisp-browser-bundle.js && browserify -t brfs -u source-map lib/browser.js -d -p [minifyify --no-map --uglify [ --compress ] ] | gzip > lib/sugarlisp-browser-bundle-min.js.gz && sugar test/test.slisp test/test.js"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "sugarlisp-core": ">=0.5.0",
+    "sugarlisp-match": ">=0.5.0",
+    "node-getopt": ">=0.2.3",
+    "debug": ">=2.2.0"
+  }
+}
+

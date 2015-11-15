@@ -1,0 +1,28 @@
+;; A very simple REPL
+
+(require "./require")
+(var readline (require "readline")
+     logo (require "../lib/logo-ogre")
+     transpiler (require "../lib/transpiler")
+     prefix "sugar> ")
+
+(set exports.runrepl
+  (function ()
+    (var rl (readline.createInterface process.stdin process.stdout))
+    (rl.on 'line'
+      (function (line)
+        (try
+          (var l (transpiler.transpile line "stdin.ls" {for: "server"}))
+          (console.log (this.eval l))
+          (function (err)
+            (console.log err)))
+        (rl.setPrompt prefix prefix.length)
+        (rl.prompt)))
+    (rl.on 'close'
+      (function ()
+        (console.log "Bye!")
+        (process.exit 0)))
+    (console.log (logo))
+    (console.log (str '                              ' 'SugarLisp v' transpiler.version '\n'))
+    (rl.setPrompt prefix prefix.length)
+    (rl.prompt)))

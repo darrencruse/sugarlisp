@@ -1,0 +1,180 @@
+(require "./require")
+(var fs (require "fs")
+     path (require "path")
+     transpiler (require "./transpiler")
+     repl (require "./repl")
+     watch (require "watch")
+     isValidFlag #/-h\b|-r\b|-v\b|-b\b|-s\b/
+     error
+       (function (err)
+         (console.error err.message)
+         ;; the following is stopping useful stack traces
+         ;; I need to make this a command line option
+         ;;(process.exit 1)
+         ;;(throw err)
+         ))
+/*
+I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BELOW
+(var opt (->
+  (.create (require 'node-getopt') [['h', 'help', 'display this help'],
+    ['v', 'version', 'show version'],
+    ['r', 'run', 'run .ls files directly'],
+    ['w', 'watch', 'watch and compile changed files beneath current directory'],
+    ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
+    ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
+    ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
+    ['m', 'map', 'generate source map files'],
+    ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']])
+  (.setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
+               "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
+              "Also compile stdin to stdout\n"
+              "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
+              "[[OPTIONS]]\n\n"))
+  (.bindHelp)
+  (.parseSystem)
+))
+*/
+(var opt (((((require 'node-getopt').create [
+    ['h', 'help', 'display this help'],
+    ['v', 'version', 'show version'],
+    ['r', 'run', 'compile and then run source files'],
+    ['w', 'watch', 'watch and compile changed files beneath current directory'],
+    ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
+    ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
+    ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
+    ['m', 'map', 'generate source map files'],
+    ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']
+  ]).setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
+               "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
+              "Also compile stdin to stdout\n"
+              "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
+              "[[OPTIONS]]\n\n")).bindHelp).parseSystem))
+
+;; We use maybe monad to carry out each step, so that we can
+;; halt the operation anytime in between if needed.
+
+(doMonad maybeMonad
+
+  ;; Start maybe Monad bindings
+
+  ;; when no args do stdin -> stdout compile or run repl and return null to
+  ;; halt operations.
+  (noargs
+    (when (&&
+              (=== opt.argv.length 0)
+              (=== (Object.keys opt.options).length 0))
+      (var input process.stdin)
+      (var output process.stdout)
+      (input.resume)
+      (input.setEncoding "utf8")
+      (var source "")
+      ;; Accumulate text form input until it ends.
+      (input.on "data"
+        (function (chunck)
+          (set source (+ source (chunck.toString)))))
+      ;; Once input ends try to compile & write to output.
+      (input.on "end"
+        (function ()
+          (output.write (transpiler.transpile source (process.cwd) {
+            sourceMap: (true? (get 'map' opt.options)),
+            to: (get 'to' opt.options),
+            for: (get 'for' opt.options),
+            pretty: (get 'pretty' opt.options)
+          }))))
+      (input.on "error" error)
+      (output.on "error" error)
+      (setTimeout
+        (function ()
+          (if (=== input.bytesRead 0)
+            (do
+              (input.removeAllListeners "data")
+              (repl.runrepl)))) 20)
+      null)
+
+  compile
+    (cond
+      (true? (get 'version' opt.options)) (do
+        (console.log (+ "Version " transpiler.version)) null)
+      (true? (get 'browser-bundle' opt.options)) (do
+        (var bundle
+          (require.resolve "sugarlisp/lib/sugarlisp-browser-bundle.js"))
+          (.pipe (fs.createReadStream bundle)
+          (fs.createWriteStream "sugarlisp-browser-bundle.js"))
+                      null)
+      (true? (get 'run' opt.options))
+          ;; run specified .ls file (directly with no explicit .js file)
+          (do
+            (var infile
+              (if (get 0 opt.argv)
+                ;; we require .ls extension (our require extension depends on it!)
+                (if (&& (=== (.indexOf (get 0 opt.argv) '.slisp') -1)
+                        (=== (.indexOf (get 0 opt.argv) '.ls') -1)
+                        (=== (.indexOf (get 0 opt.argv) '.sugar') -1)
+                        (=== (.indexOf (get 0 opt.argv) '.js') -1))
+                  (error (new Error "Error: Input file does not have a recognized file extension"))
+                  (get 0 opt.argv))
+                (error (new Error "Error: No Input file given"))))
+            ;; by running the file via require we ensure that any other
+            ;; requires within infile work (and process paths correctly)
+            (require infile)
+            null)
+      (true? (get 'watch' opt.options))
+          (do
+            (var cwd (process.cwd))
+            (console.log 'Watching' cwd 'for changes...')
+            (watch.watchTree cwd
+              (object
+                filter (function (f stat) (|| (stat.isDirectory)
+                  (!== (f.indexOf '.slisp') -1)
+                  (!== (f.indexOf '.ls') -1)
+                  (!== (f.indexOf '.sugar') -1)
+                  (!== (f.indexOf '.slml') -1)
+                  (!== (f.indexOf '.slss') -1)
+                  (!== (f.indexOf '.slson') -1)))
+                ignoreDotFiles true
+                ignoreDirectoryPattern #/node_modules/ )
+              (function (f curr prev)
+                (cond
+                  (&& curr (!== curr.nlink 0))
+                    (.spawn (require "child_process") "sugar"
+                      [(f.substring (+ cwd.length 1))] {stdio: "inherit"})
+                  (&& (object? f) (null? prev) (null? curr))
+                    (eachKey f
+                      (function (stat initialf)
+                        (unless (=== initialf cwd)
+                          (.spawn (require "child_process") "sugar"
+                            [(initialf.substring (+ cwd.length 1))] {stdio: "inherit"})))))))
+              null)
+      true true) ;; no other options - go ahead and compile
+
+  ;; if infile undefined
+  infile
+    (if (get 0 opt.argv)
+      (get 0 opt.argv)
+      (error (new Error "Error: No Input file given")))
+
+  ;; set outfile args.shift. ! outfile set outfile to infile(.js)
+  outfile
+    (do
+      (var outfile (get 1 opt.argv))
+      (unless outfile
+	      (var ext (path.extname infile))
+        (var fnameonly (path.basename infile ext))
+        (set outfile (+ fnameonly (cond (=== ext ".slml") ".html" (=== ext ".slss") "css" true ".js")))
+        (if (=== (.indexOf [".slisp", ".ls", ".sugar", ".slson", ".slml", ".slss"] ext) -1)
+          (error (new Error (str "Error: sugarlisp does not compile " ext " files")))))
+      outfile))
+
+  ;; compile infile to outfile.
+  (do
+    (console.log 'SugarLisp' (str 'v' transpiler.version ':') 'compiling' infile 'to' outfile)
+    (fs.writeFileSync outfile
+      (transpiler.transpile (fs.readFileSync infile "utf8")
+        (fs.realpathSync infile) {
+          sourceMap: (true? (get 'map' opt.options)),
+          to: (get 'to' opt.options),
+          for: (get 'for' opt.options),
+          pretty: (get 'pretty' opt.options)
+        })
+  "utf8")))
+// end of maybe Monad bindings
