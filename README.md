@@ -16,10 +16,10 @@ SugarScript is another "language" dialect which wraps SugarLisp behind a javascr
 
 Additional "mixin" dialects include:
 
-* [match](https://github.com/darrencruse/sugarlisp-match) - adds pattern matching syntax based on Dave Herman's pattern-match library
-* html  - adds support for inline-html (compare e.g. to Facebook React JSX)
+* [match](https://github.com/darrencruse/sugarlisp-match) - adds pattern matching syntax based on [Dave Herman's pattern-match library](https://github.com/dherman/pattern-match)
+* html  - adds support for inline-html (compare e.g. to [Facebook React JSX](https://facebook.github.io/jsx/))
 * async - paper over differences in callback, promise, generator based asyncronous code
-* csp   - go style concurrency based upon ubulonton's js-csp library
+* csp   - go style concurrency based upon [ubulonton's js-csp library](https://github.com/ubolonton/js-csp)
 * statements - sugarlisp is expressions-only, this adds support for statements and "return"
 
 (expect this readme to be greatly expanded soon!)
