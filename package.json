@@ -36,17 +36,6 @@
     "type": "git",
     "url": "git://github.com/darrencruse/sugarlisp.git"
   },
-  "devDependencies": {
-    "browserify": ">2.14.1",
-    "minifyify": ">=7.0.3",
-    "watch": ">= 0.14.0",
-    "source-map": ">= 0.1.40",
-    "tinix": ">=0.0.3",
-    "brfs": ">=1.4.0",
-    "underscore": "^1.8.2",
-    "js-beautify": ">=1.5.10",
-    "loophole": ">=1.0.0"
-  },
   "scripts": {
     "test": "sugar test/test.slisp test/test.js && node test/test.js",
     "prepublish": "sugar src/sugar.slisp lib/sugar.js && sugar src/repl.slisp lib/repl.js && sugar src/require.slisp lib/require.js && browserify -t brfs -u source-map lib/browser.js > lib/sugarlisp-browser-bundle.js && browserify -t brfs -u source-map lib/browser.js -d -p [minifyify --no-map --uglify [ --compress ] ] | gzip > lib/sugarlisp-browser-bundle-min.js.gz && sugar test/test.slisp test/test.js"
@@ -56,7 +45,16 @@
     "sugarlisp-core": ">=0.5.0",
     "sugarlisp-match": ">=0.5.0",
     "node-getopt": ">=0.2.3",
-    "debug": ">=2.2.0"
+    "debug": ">=2.2.0",
+    "watch": ">= 0.14.0",
+    "source-map": ">= 0.1.40",
+    "underscore": "^1.8.2",
+    "js-beautify": ">=1.5.10",
+    "browserify": ">2.14.1",
+    "brfs": ">=1.4.0",
+    "minifyify": ">=7.0.3",
+    "tinix": ">=0.0.3",
+    "loophole": ">=1.0.0"
   }
 }
 
