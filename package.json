@@ -12,7 +12,7 @@
   ],
   "author": "Darren Cruse",
   "contributors": ["Darren Cruse", "Santosh Rajan", "Balaji Rao","Irakli Gozalishvili"],
-  "version": "0.5.0",
+  "version": "0.5.1",
   "licenses": [
     {
       "type": "MIT",
@@ -44,6 +44,7 @@
   "dependencies": {
     "sugarlisp-core": ">=0.5.0",
     "sugarlisp-match": ">=0.5.0",
+    "sugarlisp-sugarscript": ">=0.5.0",
     "node-getopt": ">=0.2.3",
     "debug": ">=2.2.0",
     "watch": ">= 0.14.0",
