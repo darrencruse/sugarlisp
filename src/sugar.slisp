@@ -4,7 +4,6 @@
      transpiler (require "./transpiler")
      repl (require "./repl")
      watch (require "watch")
-     isValidFlag #/-h\b|-r\b|-v\b|-b\b|-s\b/
      error
        (function (err)
          (console.error err.message)
@@ -98,9 +97,14 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
       (true? (get 'browser-bundle' opt.options)) (do
         (var bundle
           (require.resolve "sugarlisp/lib/sugarlisp-browser-bundle.js"))
-          (.pipe (fs.createReadStream bundle)
-          (fs.createWriteStream "sugarlisp-browser-bundle.js"))
-                      null)
+        (.pipe (fs.createReadStream bundle)
+        (fs.createWriteStream "sugarlisp-browser-bundle.js"))
+        (var bundlemin
+          (require.resolve "sugarlisp/lib/sugarlisp-browser-bundle-min.js.gz"))
+        (.pipe (fs.createReadStream bundlemin)
+        (fs.createWriteStream "sugarlisp-browser-bundle-min.js.gz"))
+        null)
+
       (true? (get 'run' opt.options))
           ;; run specified .ls file (directly with no explicit .js file)
           (do
