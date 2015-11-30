@@ -119,9 +119,11 @@ var sugarlisp = function() {
           ___result = ((!undefined)),
           ___nextArgs = null,
           ___f = function(i) {
-            return ((i === 10) ?
-              i :
-              recur(++i));
+            if ((i === 10)) {
+              i
+            } else {
+              recur(++i)
+            };
           };
         recur = function() {
           ___nextArgs = arguments;
@@ -474,7 +476,7 @@ var sugarlisp = function() {
 
 function browserTest() {
   var el = document.getElementById("testresult");
-  return (el.outerHTML ?
+  if (el.outerHTML) {
     el.outerHTML = ["<pre>", (function(groupname, desc) {
       var start = new Date(),
         tests = groupname(),
@@ -490,7 +492,8 @@ function browserTest() {
           return (___memo + [elem, "\n"].join(''));
         }, ""), "\nTotal tests ", tests.length, "\nPassed ", passed, "\nFailed ", failed, "\nDuration ", (new Date() - start), "ms\n"
       ].join('');
-    })(sugarlisp, "SugarLisp Testing"), "</pre>"].join('') :
+    })(sugarlisp, "SugarLisp Testing"), "</pre>"].join('')
+  } else {
     el.innerHTML = (function(groupname, desc) {
       var start = new Date(),
         tests = groupname(),
@@ -506,9 +509,10 @@ function browserTest() {
           return (___memo + [elem, "\n"].join(''));
         }, ""), "\nTotal tests ", tests.length, "\nPassed ", passed, "\nFailed ", failed, "\nDuration ", (new Date() - start), "ms\n"
       ].join('');
-    })(sugarlisp, "SugarLisp Testing"));
+    })(sugarlisp, "SugarLisp Testing")
+  };
 }
-((typeof(window) === "undefined") ?
+if ((typeof(window) === "undefined")) {
   console.log((function(groupname, desc) {
     var start = new Date(),
       tests = groupname(),
@@ -524,5 +528,7 @@ function browserTest() {
         return (___memo + [elem, "\n"].join(''));
       }, ""), "\nTotal tests ", tests.length, "\nPassed ", passed, "\nFailed ", failed, "\nDuration ", (new Date() - start), "ms\n"
     ].join('');
-  })(sugarlisp, "SugarLisp Testing")) :
-  window.onload = browserTest);
+  })(sugarlisp, "SugarLisp Testing"))
+} else {
+  window.onload = browserTest
+};
