@@ -119,11 +119,9 @@ var sugarlisp = function() {
           ___result = ((!undefined)),
           ___nextArgs = null,
           ___f = function(i) {
-            if ((i === 10)) {
-              i
-            } else {
-              recur(++i)
-            };
+            return ((i === 10) ?
+              i :
+              recur(++i));
           };
         recur = function() {
           ___nextArgs = arguments;
