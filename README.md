@@ -40,4 +40,17 @@ Compile a sugarscript file:
 
     sugar filename.sugar
     
+You can have your files compiled automatically by running:
+
+    sugar --watch
+    
 See sugar --help for more options.
+
+### Examples
+
+Each of the dialect modules have examples in their respective "examples" directories.
+
+If you're new to sugarlisp check out the examples (many with a big thanks to [LispyScript](http://lispyscript.com)) under [sugarlisp/node_modules/sugarlisp-core/examples](https://github.com/darrencruse/sugarlisp-core/tree/master/examples)
+    
+Or if you're more a javacript kind of person you might prefer to start with the examples at [sugarlisp/node_modules/sugarlisp-sugarscript/examples](https://github.com/darrencruse/sugarlisp-sugarscript/tree/master/examples)
+  
