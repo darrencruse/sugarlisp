@@ -8,7 +8,8 @@ SugarLisp supports pluggable language "dialects" in the form of npm modules whic
 There are currently two "language" dialects and several smaller "mixin" dialects.
 
 [SugarLisp Core](https://github.com/darrencruse/sugarlisp-core) is a simple lisp designed to be easy for javascript programmers to understand.
-It started from (and remains largely - but not entirely - compatible with) [LispyScript](http://lispyscript.com)
+
+[SugarLisp Core](https://github.com/darrencruse/sugarlisp-core) started from (and remains fairly compatible with) [LispyScript](http://lispyscript.com)
 
 All language extensions desugar their syntax to [SugarLisp Core](https://github.com/darrencruse/sugarlisp-core) (which can be thought of as the AST for the other dialects).
 
