@@ -1,9 +1,11 @@
 ;; A very simple REPL
 
 (require "./require")
+
 (var readline (require "readline")
      logo (require "../lib/logo-ogre")
      transpiler (require "../lib/transpiler")
+     packageJson (require '../package.json')
      prefix "sugar> ")
 
 (set exports.runrepl
@@ -23,6 +25,6 @@
         (console.log "Bye!")
         (process.exit 0)))
     (console.log (logo))
-    (console.log (str '                              ' 'SugarLisp v' transpiler.version '\n'))
+    (console.log (str '                              ' 'SugarLisp v' packageJson.version '\n'))
     (rl.setPrompt prefix prefix.length)
     (rl.prompt)))

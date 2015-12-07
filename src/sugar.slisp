@@ -2,6 +2,7 @@
 (var fs (require "fs")
      path (require "path")
      transpiler (require "./transpiler")
+     packageJson (require '../package.json')
      repl (require "./repl")
      watch (require "watch")
      error
@@ -93,7 +94,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
   compile
     (cond
       (true? (get 'version' opt.options)) (do
-        (console.log (+ "Version " transpiler.version)) null)
+        (console.log (+ "Version " packageJson.version)) null)
       (true? (get 'browser-bundle' opt.options)) (do
         (var bundle
           (require.resolve "sugarlisp/lib/sugarlisp-browser-bundle.js"))
@@ -171,7 +172,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
 
   ;; compile infile to outfile.
   (do
-    (console.log 'SugarLisp' (str 'v' transpiler.version ':') 'compiling' infile 'to' outfile)
+    (console.log 'SugarLisp' (str 'v' packageJson.version ':') 'compiling' infile 'to' outfile)
     (fs.writeFileSync outfile
       (transpiler.transpile (fs.readFileSync infile "utf8")
         (fs.realpathSync infile) {
