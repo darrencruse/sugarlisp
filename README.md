@@ -19,6 +19,7 @@ Additional "mixin" dialects include:
 
 * [match](https://github.com/darrencruse/sugarlisp-match) - adds pattern matching syntax based on [Dave Herman's pattern-match library](https://github.com/dherman/pattern-match)
 * [html](https://github.com/darrencruse/sugarlisp-html)  - adds support for inline-html (compare e.g. to [Facebook React JSX](https://facebook.github.io/jsx/))
+* [css](https://github.com/darrencruse/sugarlisp-css)  - adds support for css (compare to [Less](http://lesscss.org) or [Sass](http://sass-lang.com))
 * [async](https://github.com/darrencruse/sugarlisp-async) - paper over differences in callback, promise, generator based asyncronous code
 * [csp](https://github.com/darrencruse/sugarlisp-csp)   - go style concurrency based upon [ubulonton's js-csp library](https://github.com/ubolonton/js-csp)
 
