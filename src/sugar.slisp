@@ -165,7 +165,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
       (unless outfile
 	      (var ext (path.extname infile))
         (var fnameonly (path.basename infile ext))
-        (set outfile (+ fnameonly (cond (=== ext ".slml") ".html" (=== ext ".slss") "css" true ".js")))
+        (set outfile (+ fnameonly (cond (=== ext ".slml") ".html" (=== ext ".slss") ".css" true ".js")))
         (if? (=== (.indexOf [".slisp", ".ls", ".sugar", ".slson", ".slml", ".slss"] ext) -1)
           (error (new Error (str "Error: sugarlisp does not compile " ext " files")))))
       outfile))
