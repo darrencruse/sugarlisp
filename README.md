@@ -22,7 +22,7 @@ SugarLisp Core files use the extension ".score".
 
 SugarLisp Plus extends "core" with syntax borrowed from javascript e.g. "[]" for arrays, "{}" for code blocks and JSON style object literals, "=>" for infix arrow functions, etc.  Whereas SugarLisp Core is meant as a building block, SugarLisp Plus is meant as a useable lisp that's easy for programmers coming to lisp from a javascript background.
 
-SugarLisp Plus files use the extension ".plus".
+SugarLisp Plus files use the extension ".slisp".
 
 * [SugarScript](https://github.com/darrencruse/sugarlisp-sugarscript) is a lisp that looks like javascript.
 
