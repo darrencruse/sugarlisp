@@ -62,11 +62,11 @@ See sugar --help for more options.
 
 ### Desugaring a File
 
-To see the program desugared to it's SugarLisp Core "assembly language" version do:
+To see your program desugared to it's SugarLisp Core "assembly language" version do:
 
     sugar --to core filename.ext filename.score
 
-Note you can compile ".score" files with the sugar command as normal:
+Note you can compile ".score" (i.e. "sugarlisp core") files with the sugar command as normal:
 
     sugar filename.score
 
@@ -75,7 +75,7 @@ Note you can compile ".score" files with the sugar command as normal:
 
 Each of the dialect modules have examples in their respective "examples" directories.
 
-If you're new to sugarlisp check out the examples (many with a big thanks to [LispyScript](http://lispyscript.com)) under [sugarlisp/node_modules/sugarlisp-core/examples](https://github.com/darrencruse/sugarlisp-core/tree/master/examples)
+If you're new to sugarlisp check out the examples (many with a big thanks to [LispyScript](http://lispyscript.com)) under [sugarlisp/node_modules/sugarlisp-plus/examples](https://github.com/darrencruse/sugarlisp-plus/tree/master/examples)
     
 Or if you're more a javacript kind of person you might prefer to start with the examples at [sugarlisp/node_modules/sugarlisp-sugarscript/examples](https://github.com/darrencruse/sugarlisp-sugarscript/tree/master/examples)
   
