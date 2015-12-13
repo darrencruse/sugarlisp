@@ -27,8 +27,8 @@ While SugarScript is young, inspiration comes from e.g. [CGOL](https://www.wikiw
 Current SugarLisp "mixin" dialects (in various states of completion) include:
 
 * [match](https://github.com/darrencruse/sugarlisp-match) - adds pattern matching syntax based on [Dave Herman's pattern-match library](https://github.com/dherman/pattern-match)
-* [html](https://github.com/darrencruse/sugarlisp-html)  - adds support for inline-html (compare to e.g. [Facebook React JSX](https://facebook.github.io/jsx/))
-* [css](https://github.com/darrencruse/sugarlisp-css)  - adds support for inline-css (compare to e.g. [Less](http://lesscss.org) and [Sass](http://sass-lang.com))
+* [html](https://github.com/darrencruse/sugarlisp-html)  - adds support for inline html (compare to e.g. [Facebook React JSX](https://facebook.github.io/jsx/))
+* [css](https://github.com/darrencruse/sugarlisp-css)  - adds support for inline css (compare to e.g. [Less](http://lesscss.org) and [Sass](http://sass-lang.com))
 * [async](https://github.com/darrencruse/sugarlisp-async) - paper over differences in callback, promise, generator based asyncronous code
 * [csp](https://github.com/darrencruse/sugarlisp-csp)   - go style concurrency based upon [ubulonton's js-csp library](https://github.com/ubolonton/js-csp)
 
