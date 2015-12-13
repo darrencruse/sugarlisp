@@ -18,7 +18,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
 (var opt (->
   (.create (require 'node-getopt') [['h', 'help', 'display this help'],
     ['v', 'version', 'show version'],
-    ['r', 'run', 'run .ls files directly'],
+    ['r', 'run', 'compile and run source files'],
     ['w', 'watch', 'watch and compile changed files beneath current directory'],
     ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
     ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
@@ -37,7 +37,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
 (var opt (((((require 'node-getopt').create [
     ['h', 'help', 'display this help'],
     ['v', 'version', 'show version'],
-    ['r', 'run', 'compile and then run source files'],
+    ['r', 'run', 'compile and run source files'],
     ['w', 'watch', 'watch and compile changed files beneath current directory'],
     ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
     ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
@@ -107,13 +107,13 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
         null)
 
       (true? (get 'run' opt.options))
-          ;; run specified .ls file (directly with no explicit .js file)
+          ;; run specified source file (directly with no explicit .js file)
           (do
             (var infile
               (if? (get 0 opt.argv)
-                ;; we require .ls extension (our require extension depends on it!)
-                (if? (&& (=== (.indexOf (get 0 opt.argv) '.slisp') -1)
-                        (=== (.indexOf (get 0 opt.argv) '.ls') -1)
+                ;; we require a proper extension (our require extension depends on it!)
+                (if? (&& (=== (.indexOf (get 0 opt.argv) '.score') -1)
+                        (=== (.indexOf (get 0 opt.argv) '.slisp') -1)
                         (=== (.indexOf (get 0 opt.argv) '.sugar') -1)
                         (=== (.indexOf (get 0 opt.argv) '.js') -1))
                   (error (new Error "Error: Input file does not have a recognized file extension"))
@@ -130,8 +130,8 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
             (watch.watchTree cwd
               (object
                 filter (function (f stat) (|| (stat.isDirectory)
+                  (!== (f.indexOf '.score') -1)
                   (!== (f.indexOf '.slisp') -1)
-                  (!== (f.indexOf '.ls') -1)
                   (!== (f.indexOf '.sugar') -1)
                   (!== (f.indexOf '.slml') -1)
                   (!== (f.indexOf '.slss') -1)
@@ -166,7 +166,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
 	      (var ext (path.extname infile))
         (var fnameonly (path.basename infile ext))
         (set outfile (+ fnameonly (cond (=== ext ".slml") ".html" (=== ext ".slss") ".css" true ".js")))
-        (if? (=== (.indexOf [".slisp", ".ls", ".sugar", ".slson", ".slml", ".slss"] ext) -1)
+        (if? (=== (.indexOf [".score", ".slisp", ".sugar", ".slson", ".slml", ".slss"] ext) -1)
           (error (new Error (str "Error: sugarlisp does not compile " ext " files")))))
       outfile))
 

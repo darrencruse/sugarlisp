@@ -6,7 +6,7 @@
      logo (require "../lib/logo-ogre")
      transpiler (require "../lib/transpiler")
      packageJson (require '../package.json')
-     prefix "sugar> ")
+     prefix "Sugar> ")
 
 (set exports.runrepl
   (function ()
@@ -14,7 +14,7 @@
     (rl.on 'line'
       (function (line)
         (try
-          (var l (transpiler.transpile line "stdin.ls" {for: "server"}))
+          (var l (transpiler.transpile line "stdin.slisp" {for: "server"}))
           (console.log (this.eval l))
           (function (err)
             (console.log err)))
