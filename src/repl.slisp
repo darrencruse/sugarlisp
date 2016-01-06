@@ -2,23 +2,32 @@
 
 (require "./require")
 
-(var readline (require "readline")
-     logo (require "../lib/logo-ogre")
-     transpiler (require "../lib/transpiler")
-     packageJson (require '../package.json')
-     prefix "Sugar> ")
+(var engine (require "./engine")
+      readline (require "readline")
+      repldialect (require "./repl-dialect")
+      logo (require "../lib/logo-ogre")
+      packageJson (require '../package.json'))
 
 (set exports.runrepl
-  (function ()
+  (function (ext)
+    (= ext (|| ext "sugar"))
+    (var prompt (str ext "> "))
+
+    ; the engine we eval/transpile thru for the entire repl session
+    ; (it maintains state e.g. the dialects they've #used during their session)
+    (var sugarlisp (new engine.Engine undefined (str "stdin." ext)))
+    (sugarlisp.use_dialect repldialect)
+
     (var rl (readline.createInterface process.stdin process.stdout))
     (rl.on 'line'
       (function (line)
         (try
-          (var l (transpiler.transpile line "stdin.slisp" {for: "server"}))
-          (console.log (this.eval l))
+          (var ec this)
+          (var result (sugarlisp.eval line {for: "server" jsevalcontext: ec}))
+          (console.log result)
           (function (err)
             (console.log err)))
-        (rl.setPrompt prefix prefix.length)
+        (rl.setPrompt prompt prompt.length)
         (rl.prompt)))
     (rl.on 'close'
       (function ()
@@ -26,5 +35,5 @@
         (process.exit 0)))
     (console.log (logo))
     (console.log (str '                              ' 'SugarLisp v' packageJson.version '\n'))
-    (rl.setPrompt prefix prefix.length)
+    (rl.setPrompt prompt prompt.length)
     (rl.prompt)))

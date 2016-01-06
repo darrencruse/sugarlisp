@@ -9,11 +9,12 @@
     "lispyscript",
     "compiler",
     "transpiler",
+    "interpreter",
     "lisp"
   ],
   "author": "Darren Cruse",
   "contributors": ["Santosh Rajan", "Balaji Rao","Irakli Gozalishvili"],
-  "version": "0.6.0",
+  "version": "0.6.5",
   "licenses": [
     {
       "type": "MIT",
@@ -26,7 +27,7 @@
   "directories": {
     "lib": "./lib"
   },
-  "main": "./lib/transpiler",
+  "main": "./lib/engine",
   "bin": {
     "sugar": "./bin/sugar.js",
     "sugardbg": "./bin/sugardbg.js"
@@ -43,14 +44,14 @@
   },
   "preferGlobal": true,
   "dependencies": {
-    "sugarlisp-async": ">=0.5.3",
-    "sugarlisp-core": ">=0.5.6",
-    "sugarlisp-css": ">=0.5.1",
-    "sugarlisp-csp": ">=0.5.2",
-    "sugarlisp-html": ">=0.5.2",
-    "sugarlisp-match": ">=0.5.2",
-    "sugarlisp-plus": ">=0.5.5",
-    "sugarlisp-sugarscript": ">=0.5.6",
+    "sugarlisp-async": ">=0.6.0",
+    "sugarlisp-core": ">=0.6.5",
+    "sugarlisp-css": ">=0.5.6",
+    "sugarlisp-csp": ">=0.6.0",
+    "sugarlisp-html": ">=0.6.0",
+    "sugarlisp-match": ">=0.6.0",
+    "sugarlisp-plus": ">=0.6.0",
+    "sugarlisp-sugarscript": ">=0.6.1",
     "node-getopt": ">=0.2.3",
     "debug": ">=2.2.0",
     "watch": ">= 0.14.0",
@@ -64,4 +65,3 @@
     "loophole": ">=1.0.0"
   }
 }
-
