@@ -9,4 +9,4 @@
     (var code (fs.readFileSync filename "utf8"))
     (module._compile (transpiler.transpile code (path.relative (process.cwd) filename)) filename))))
 
-(each [".slisp",".ls",".sugar",".slson",".slml",".slss"] (ext) => (requireable ext))
+(each [".score",".ls",".slisp",".sugar",".slon",".slml",".slss",".sson",".ssml",".ssss",] (ext) => (requireable ext))

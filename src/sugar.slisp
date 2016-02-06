@@ -13,42 +13,45 @@
          ;;(process.exit 1)
          ;;(throw err)
          ))
+
 /*
 I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BELOW
 (var opt (->
-  (.create (require 'node-getopt') [['h', 'help', 'display this help'],
-    ['v', 'version', 'show version'],
-    ['r', 'run', 'compile and run source files'],
-    ['w', 'watch', 'watch and compile changed files beneath current directory'],
-    ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
-    ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
-    ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
-    ['m', 'map', 'generate source map files'],
-    ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']])
-  (.setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
-               "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
-              "Also compile stdin to stdout\n"
-              "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
-              "[[OPTIONS]]\n\n"))
-  (.bindHelp)
-  (.parseSystem)
+ (.create (require 'node-getopt') [['h', 'help', 'display this help'],
+   ['v', 'version', 'show version'],
+   ['r', 'repl=ARG', 'open the repl as "sugar", "slisp", or "score"'],
+   ['e', 'exec', 'compile and then execute source files'],
+   ['w', 'watch', 'watch and compile changed files beneath current directory'],
+   ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
+   ['t', 'to=ARG', 'compile to "tokens", "core" or "json" (compiles to javascript by default)'],
+   ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
+   ['m', 'map', 'generate source map files'],
+   ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']])
+ (.setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
+              "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
+             "Also compile stdin to stdout\n"
+             "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
+             "[[OPTIONS]]\n\n"))
+ (.bindHelp)
+ (.parseSystem)
 ))
 */
 (var opt (((((require 'node-getopt').create [
-    ['h', 'help', 'display this help'],
-    ['v', 'version', 'show version'],
-    ['r', 'run', 'compile and run source files'],
-    ['w', 'watch', 'watch and compile changed files beneath current directory'],
-    ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
-    ['t', 'to=ARG', 'compile to e.g. "core" or "json" (compiles to javascript by default)'],
-    ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
-    ['m', 'map', 'generate source map files'],
-    ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']
-  ]).setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
-               "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
-              "Also compile stdin to stdout\n"
-              "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
-              "[[OPTIONS]]\n\n")).bindHelp).parseSystem))
+   ['h', 'help', 'display this help'],
+   ['v', 'version', 'show version'],
+   ['r', 'repl=ARG', 'open the repl as "sugar", "slisp", or "score"'],
+   ['e', 'exec', 'compile and then execute source files'],
+   ['w', 'watch', 'watch and compile changed files beneath current directory'],
+   ['f', 'for=ARG', 'compile for e.g. "client" or "server"']
+   ['t', 'to=ARG', 'compile to "tokens", "core" or "json" (compiles to javascript by default)'],
+   ['b', 'browser-bundle', 'create sugarlisp-browser-bundle.js in the current directory'],
+   ['m', 'map', 'generate source map files'],
+   ['', 'pretty[=PRETTY]', 'beautify the output (defaults to true unless generating sourcemaps)']
+ ]).setHelp (+ "sugar [OPTION] [<infile>] [<outfile>]\n\n"
+              "<outfile> will default to <infile> with appropriate (usually '.js') extension\n\n"
+             "Also compile stdin to stdout\n"
+             "eg. $ echo '(console.log \"hello\")' | sugar\n\n"
+             "[[OPTIONS]]\n\n")).bindHelp).parseSystem))
 
 ;; We use maybe monad to carry out each step, so that we can
 ;; halt the operation anytime in between if needed.
@@ -62,7 +65,9 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
   (noargs
     (when (&&
               (=== opt.argv.length 0)
-              (=== (Object.keys opt.options).length 0))
+              (||
+                (=== (Object.keys opt.options).length 0)
+                (get 'repl' opt.options)))
       (var input process.stdin)
       (var output process.stdout)
       (input.resume)
@@ -88,7 +93,7 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
           (if? (=== input.bytesRead 0)
             (do
               (input.removeAllListeners "data")
-              (repl.runrepl)))) 20)
+              (repl.runrepl (get 'repl' opt.options))))) 20)
       null)
 
   compile
@@ -106,8 +111,8 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
         (fs.createWriteStream "sugarlisp-browser-bundle-min.js.gz"))
         null)
 
-      (true? (get 'run' opt.options))
-          ;; run specified source file (directly with no explicit .js file)
+      (true? (get 'exec' opt.options))
+          ;; execute specified source file (directly with no explicit .js file)
           (do
             (var infile
               (if? (get 0 opt.argv)
@@ -135,7 +140,10 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
                   (!== (f.indexOf '.sugar') -1)
                   (!== (f.indexOf '.slml') -1)
                   (!== (f.indexOf '.slss') -1)
-                  (!== (f.indexOf '.slson') -1)))
+                  (!== (f.indexOf '.slon') -1)
+                  (!== (f.indexOf '.ssml') -1)
+                  (!== (f.indexOf '.sson') -1)
+                  (!== (f.indexOf '.ssss') -1)))
                 ignoreDotFiles true
                 ignoreDirectoryPattern #/node_modules/ )
               (function (f curr prev)
@@ -162,12 +170,17 @@ I SEEM TO HAVE BROKEN THE THREAD-FIRST MACRO BELOW IVE TEMPORARILY REMOVE IT BEL
   outfile
     (do
       (var outfile (get 1 opt.argv))
+      ;; if they didn't give the output file name - create it
       (unless outfile
 	      (var ext (path.extname infile))
         (var fnameonly (path.basename infile ext))
-        (set outfile (+ fnameonly (cond (=== ext ".slml") ".html" (=== ext ".slss") ".css" true ".js")))
-        (if? (=== (.indexOf [".score", ".slisp", ".sugar", ".slson", ".slml", ".slss"] ext) -1)
-          (error (new Error (str "Error: sugarlisp does not compile " ext " files")))))
+        (set outfile (+ fnameonly
+           (cond
+             (|| (=== ext ".score") (=== ext ".slisp") (== ext ".sugar")) ".js"
+             (|| (=== ext ".slml") (=== ext ".ssml")) ".html"
+             (|| (=== ext ".slss") (=== ext ".ssss")) ".css"
+             (|| (=== ext ".slon") (=== ext ".sson")) ".json"
+             true (error (new Error (str "Error: sugarlisp does not compile " ext " files")))))))
       outfile))
 
   ;; compile infile to outfile.
