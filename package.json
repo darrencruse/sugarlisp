@@ -14,7 +14,7 @@
   ],
   "author": "Darren Cruse",
   "contributors": ["Santosh Rajan", "Balaji Rao","Irakli Gozalishvili"],
-  "version": "0.6.5",
+  "version": "0.6.6",
   "licenses": [
     {
       "type": "MIT",
@@ -45,10 +45,11 @@
   "preferGlobal": true,
   "dependencies": {
     "sugarlisp-async": ">=0.6.0",
-    "sugarlisp-core": ">=0.6.5",
+    "sugarlisp-core": ">=0.6.7",
     "sugarlisp-css": ">=0.5.6",
     "sugarlisp-csp": ">=0.6.0",
-    "sugarlisp-html": ">=0.6.0",
+    "sugarlisp-htmlreader": ">=0.6.0",
+    "sugarlisp-html": ">=0.6.2",
     "sugarlisp-match": ">=0.6.0",
     "sugarlisp-plus": ">=0.6.0",
     "sugarlisp-sugarscript": ">=0.6.1",
